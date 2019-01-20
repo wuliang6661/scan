@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    android:paddingLeft="21dp"
+    android:paddingRight="21dp"
+    tools:context=".MainActivity">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="条码扫描"
+        android:textColor="#4360FC"
+        android:textSize="13sp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="工单单号："
+            android:textColor="#333333"
+            android:textSize="12sp" />
+
+
+        <TextView
+            android:id="@+id/order_num"
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:background="@drawable/edit_bg"
+            android:gravity="center_vertical"
+            android:paddingLeft="12dp"
+            android:textColor="#999999"
+            android:textSize="12sp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="产品品号："
+            android:textColor="#333333"
+            android:textSize="12sp" />
+
+
+        <TextView
+            android:id="@+id/product_num"
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:background="@drawable/edit_bg"
+            android:gravity="center_vertical"
+            android:paddingLeft="12dp"
+            android:textColor="#999999"
+            android:textSize="12sp" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="         描述："
+            android:textColor="#333333"
+            android:textSize="12sp" />
+
+
+        <TextView
+            android:id="@+id/describe_num"
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:background="@drawable/edit_bg"
+            android:gravity="center_vertical"
+            android:paddingLeft="12dp"
+            android:textColor="#333333"
+            android:textSize="12sp"
+            tools:text="锂电子" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="         一包："
+            android:textColor="#333333"
+            android:textSize="12sp" />
+
+
+        <TextView
+            android:id="@+id/order_size"
+            android:layout_width="0dp"
+            android:layout_height="23dp"
+            android:layout_weight="1"
+            android:background="@drawable/edit_bg"
+            android:gravity="center_vertical"
+            android:paddingLeft="12dp"
+            android:textColor="#333333"
+            android:textSize="12sp"
+            tools:text="15" />
+
+
+        <TextView
+            android:id="@+id/bt_update"
+            android:layout_width="81dp"
+            android:layout_height="23dp"
+            android:layout_marginLeft="7dp"
+            android:background="@drawable/button_bg"
+            android:gravity="center"
+            android:text="更换订单"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="过程标签："
+            android:textColor="#333333"
+            android:textSize="12sp" />
+
+
+        <com.wul.scan.ScanEditText
+            android:id="@+id/ed_guocheng"
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:background="@drawable/edit_bg"
+            android:gravity="center_vertical"
+            android:imeOptions="actionSearch"
+            android:paddingLeft="12dp"
+            android:singleLine="true"
+            android:textColor="#999999"
+            android:textSize="12sp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="电池标签："
+            android:textColor="#333333"
+            android:textSize="12sp" />
+
+
+        <com.wul.scan.ScanEditText
+            android:id="@+id/ed_dianchi"
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:background="@drawable/edit_bg"
+            android:gravity="center_vertical"
+            android:imeOptions="actionSearch"
+            android:paddingLeft="12dp"
+            android:singleLine="true"
+            android:textColor="#999999"
+            android:textSize="12sp" />
+
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/num"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:gravity="center"
+        android:textColor="#4160FB"
+        android:textSize="27sp"
+        tools:text="15" />
+
+
+</LinearLayout>
