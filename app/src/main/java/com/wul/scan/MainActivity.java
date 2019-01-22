@@ -104,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (b) {
                 if (!isHasFouce) {
                     edGuocheng.setText("");
+                    num.setText("");
+                    edDianchi.setText("");
                     GuochengId = null;
                     isHasFouce = true;
                     if (orderBO == null) {
