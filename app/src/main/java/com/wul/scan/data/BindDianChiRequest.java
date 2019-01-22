@@ -14,6 +14,7 @@ public class BindDianChiRequest {
     private String imei;
     private int orderId;
     private String processLabelId;
+    public String token;
 
     public String getBatteryLabel() {
         return batteryLabel;

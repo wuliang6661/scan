@@ -8,18 +8,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.wul.scan.api.HttpResultSubscriber;
 import com.wul.scan.api.HttpServiceIml;
@@ -27,6 +29,7 @@ import com.wul.scan.data.BindDianChiRequest;
 import com.wul.scan.data.BindGuochengRequest;
 import com.wul.scan.data.GuoChengBo;
 import com.wul.scan.data.OrderBO;
+import com.wul.scan.data.OrderResult;
 import com.wul.scan.data.PageBO;
 
 import java.util.List;
@@ -37,7 +40,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     @BindView(R.id.order_num)
-    TextView orderNum;
+    ScanEditText orderNum;
     @BindView(R.id.product_num)
     TextView productNum;
     @BindView(R.id.describe_num)
@@ -58,13 +61,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String GuochengId;
     private boolean isHasFouce = true;
 
+    private String strOrderNum;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        getOrderNum();
+//        getOrderNum();
         btUpdate.setOnClickListener(this);
         setListener();
         requestPermission();
@@ -92,6 +97,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             } else {
                 isHasFouce = false;
+            }
+        });
+//        orderNum.setOnFocusChangeListener((v, hasFocus) -> {
+//            if (hasFocus) {
+//                if (!StringUtils.isEmpty(orderNum.getText().toString())) {
+//                    orderNum.setText(orderNum.getText().toString());// 添加这句后实现效果
+//                    orderNum.selectAll();
+//                }
+//            }
+//        });
+        orderNum.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (StringUtils.isEmpty(s.toString())) {
+                    productNum.setText("");
+                    describeNum.setText("");
+                    orderSize.setText("");
+                }
             }
         });
     }
@@ -126,6 +159,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onFiled(String message) {
                 Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    /**
+     * 搜索工单编号
+     */
+    private void selectOrderNum() {
+        OrderResult result = new OrderResult();
+        result.setOrderNum(strOrderNum);
+        HttpServiceIml.selectOrderNum(result).subscribe(new HttpResultSubscriber<List<OrderBO>>() {
+            @Override
+            public void onSuccess(List<OrderBO> o) {
+                if (o != null && o.size() > 0) {
+                    orderBO = o.get(0);
+                    productNum.setText(orderBO.getProductCode());
+                    describeNum.setText(orderBO.getProductName());
+                    orderSize.setText(orderBO.getProductNum() + "");
+                    edGuocheng.requestFocus();
+                } else {
+                    ToastUtils.showShort("没有此订单！");
+                }
+            }
+
+            @Override
+            public void onFiled(String message) {
+                ToastUtils.showShort(message);
             }
         });
     }
@@ -177,23 +238,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onSuccess(String s) {
                 ToastUtils.showShort("绑定成功！");
                 num.setText(s);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        edDianchi.setText("");
-                    }
-                }, 2000);
+                edDianchi.setSelectAllOnFocus(true);
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        edDianchi.setText("");
+//                    }
+//                }, 2000);
             }
 
             @Override
             public void onFiled(String message) {
                 Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        edDianchi.setText("");
-                    }
-                }, 2000);
+                edDianchi.setSelectAllOnFocus(true);
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        edDianchi.setText("");
+//                    }
+//                }, 2000);
             }
         });
     }
@@ -242,9 +305,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 //引导用户手动授权，权限请求失败
                                 prissiosFiled();
                             }).setOnCancelListener(dialog -> {
-                                //引导用户手动授权，权限请求失败
-                                prissiosFiled();
-                            }).show();
+                        //引导用户手动授权，权限请求失败
+                        prissiosFiled();
+                    }).show();
 
                 } else {
                     //权限请求失败，但未选中“不再提示”选项
@@ -270,11 +333,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.bt_update:
-                getOrderNum();
+                strOrderNum = orderNum.getText().toString().trim();
+                if (StringUtils.isEmpty(strOrderNum)) {
+                    ToastUtils.showShort("请输入工单单号！");
+                    return;
+                }
+//                getOrderNum();
+                selectOrderNum();
                 edGuocheng.setText("");
                 edDianchi.setText("");
                 num.setText("");
-                edGuocheng.requestFocus();
                 break;
         }
     }

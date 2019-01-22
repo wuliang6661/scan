@@ -35,15 +35,18 @@
             android:textSize="12sp" />
 
 
-        <TextView
+        <com.wul.scan.ScanEditText
             android:id="@+id/order_num"
             android:layout_width="match_parent"
             android:layout_height="23dp"
             android:background="@drawable/edit_bg"
             android:gravity="center_vertical"
+            android:maxLength="15"
             android:paddingLeft="12dp"
+            android:selectAllOnFocus="true"
             android:textColor="#999999"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:text="sdadsadsadsadsa" />
 
 
     </LinearLayout>
@@ -145,9 +148,10 @@
             android:layout_marginLeft="7dp"
             android:background="@drawable/button_bg"
             android:gravity="center"
-            android:text="更换订单"
+            android:text="查询订单"
             android:textColor="#ffffff"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:visibility="visible" />
 
 
     </LinearLayout>
@@ -208,6 +212,7 @@
             android:gravity="center_vertical"
             android:imeOptions="actionSearch"
             android:paddingLeft="12dp"
+            android:selectAllOnFocus="true"
             android:singleLine="true"
             android:textColor="#999999"
             android:textSize="12sp" />

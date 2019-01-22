@@ -12,6 +12,7 @@ public class BindGuochengRequest {
     private String imei;
     private int orderId;
     private String processLabel;
+    public String token;
 
     public String getImei() {
         return imei;

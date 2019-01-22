@@ -4,8 +4,11 @@ import com.wul.scan.data.BaseResult;
 import com.wul.scan.data.BindDianChiRequest;
 import com.wul.scan.data.BindGuochengRequest;
 import com.wul.scan.data.GuoChengBo;
+import com.wul.scan.data.LoginBO;
 import com.wul.scan.data.OrderBO;
+import com.wul.scan.data.OrderResult;
 import com.wul.scan.data.PageBO;
+import com.wul.scan.data.UserBO;
 
 import java.util.List;
 
@@ -21,10 +24,17 @@ import rx.Observable;
 
 public interface HttpService {
 
-    String URL = "http://172.16.244.44:80";   //测试服
+    String URL = "http://47.98.53.141:8099";   //测试服
 //    String URL = "http://mapi.platform.yinghezhong.com/";  //测试服2
 //    String URL = "http://api.open.yinghezhong.com/";  //正式环境
 //    String URL = "http://mapi.open.yinghezhong.com/";  //正式环境2
+
+
+    /**
+     * 登录
+     */
+    @POST("/battery_webservice/dProcessLabel/login")
+    Observable<BaseResult<UserBO>> login(@Body LoginBO loginBO);
 
 
     /**
@@ -45,5 +55,12 @@ public interface HttpService {
      */
     @POST("/battery_webservice/dProcessLabel/insertProcessBattery")
     Observable<BaseResult<String>> bindBattery(@Body BindDianChiRequest message);
+
+    /**
+     * 根据工单查询工单详情
+     */
+    @POST("/battery_webservice/dProcessLabel/selectOrderAndProduct")
+    Observable<BaseResult<List<OrderBO>>> selectByOrderNum(@Body OrderResult result);
+
 
 }

@@ -6,5 +6,6 @@ public class PageBO {
 
     public int pageSize;
 
+    public String token;
 
 }
