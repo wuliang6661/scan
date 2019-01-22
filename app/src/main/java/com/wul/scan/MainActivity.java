@@ -16,6 +16,7 @@ import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -59,12 +60,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int pageNum = 0;
     private OrderBO orderBO;
     private String GuochengId;
-    private boolean isHasFouce = true;
+    private boolean isHasFouce = false;
 
     private String strOrderNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // 避免从桌面启动程序后，会重新实例化入口类的activity
+        if (!this.isTaskRoot()) {
+            Intent intent = getIntent();
+            if (intent != null) {
+                String action = intent.getAction();
+                if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(action)) {
+                    finish();
+                    return;
+                }
+            }
+        }
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
@@ -94,19 +106,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     edGuocheng.setText("");
                     GuochengId = null;
                     isHasFouce = true;
+                    if (orderBO == null) {
+                        ToastUtils.showShort("请先输入有效工单单号！");
+                        orderNum.requestFocus();
+                    }
                 }
             } else {
                 isHasFouce = false;
             }
         });
-//        orderNum.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                if (!StringUtils.isEmpty(orderNum.getText().toString())) {
-//                    orderNum.setText(orderNum.getText().toString());// 添加这句后实现效果
-//                    orderNum.selectAll();
-//                }
-//            }
-//        });
         orderNum.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -121,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void afterTextChanged(Editable s) {
                 if (StringUtils.isEmpty(s.toString())) {
+                    orderBO = null;
                     productNum.setText("");
                     describeNum.setText("");
                     orderSize.setText("");
@@ -181,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     edGuocheng.requestFocus();
                 } else {
                     ToastUtils.showShort("没有此订单！");
+                    orderBO = null;
                 }
             }
 
@@ -239,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ToastUtils.showShort("绑定成功！");
                 num.setText(s);
                 edDianchi.setSelectAllOnFocus(true);
+                edDianchi.selectAll();
 //                new Handler().postDelayed(new Runnable() {
 //                    @Override
 //                    public void run() {
@@ -251,6 +262,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onFiled(String message) {
                 Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
                 edDianchi.setSelectAllOnFocus(true);
+                edDianchi.selectAll();
 //                new Handler().postDelayed(new Runnable() {
 //                    @Override
 //                    public void run() {
@@ -346,4 +358,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                new com.wul.scan.AlertDialog(this).builder().setGone().setTitle("提示")
+                        .setMsg("是否退出登录？")
+                        .setCancelable(false)
+                        .setPositiveButton("确定", v -> {
+                            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+                        })
+                        .setNegativeButton("取消", null).show();
+                break;
+        }
+        return true;
+    }
+
 }
