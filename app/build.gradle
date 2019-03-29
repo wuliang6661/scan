@@ -55,4 +55,5 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     implementation 'com.blankj:utilcode:1.19.0'
+    implementation 'com.bigkoo:svprogresshud:1.0.6'
 }

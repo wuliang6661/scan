@@ -22,6 +22,7 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bigkoo.svprogresshud.SVProgressHUD;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.wul.scan.api.HttpResultSubscriber;
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private String strOrderNum;
 
+    private SVProgressHUD svProgressHUD;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // 避免从桌面启动程序后，会重新实例化入口类的activity
@@ -83,13 +86,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ButterKnife.bind(this);
 //        getOrderNum();
         btUpdate.setOnClickListener(this);
+        svProgressHUD = new SVProgressHUD(this);
         setListener();
         requestPermission();
     }
 
 
     private void setListener() {
-        edGuocheng.setScanResultListener(result -> bindGuocheng());
+        edGuocheng.setScanResultListener(result -> {
+            bindGuocheng();
+            edGuocheng.setEnabled(false);
+        });
         edDianchi.setScanResultListener(result -> bindDianChi());
         edDianchi.setOnFocusChangeListener((view, b) -> {
             if (b) {
@@ -212,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(MainActivity.this, "请先获取工单！", Toast.LENGTH_SHORT).show();
             return;
         }
+        showProgress();
         BindGuochengRequest request = new BindGuochengRequest();
         request.setOrderId(orderBO.getOrderId());
         request.setProcessLabel(edGuocheng.getText().toString().trim());
@@ -219,6 +227,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         HttpServiceIml.bindGuocheng(request).subscribe(new HttpResultSubscriber<GuoChengBo>() {
             @Override
             public void onSuccess(GuoChengBo s) {
+                stopProgress();
+                edGuocheng.setEnabled(true);
                 Toast.makeText(MainActivity.this, "过程标签绑定成功！", Toast.LENGTH_SHORT).show();
                 GuochengId = s.getProcessLabelId() + "";
                 num.setText(s.getBatteryNum() + "");
@@ -227,6 +237,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onFiled(String message) {
+                stopProgress();
+                edGuocheng.setEnabled(true);
+                edGuocheng.setText("");
                 Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
@@ -378,6 +391,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
         return true;
+    }
+
+
+    /**
+     * 显示加载进度弹窗
+     */
+    protected void showProgress() {
+        svProgressHUD.showWithStatus("加载中...", SVProgressHUD.SVProgressHUDMaskType.BlackCancel);
+    }
+
+    /**
+     * 停止弹窗
+     */
+    protected void stopProgress() {
+        if (svProgressHUD.isShowing()) {
+            svProgressHUD.dismiss();
+        }
     }
 
 }

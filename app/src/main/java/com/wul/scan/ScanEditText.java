@@ -97,24 +97,21 @@ public class ScanEditText extends EditText {
     }
 
     private void setOnEditorAction() {
-        setOnEditorActionListener(new OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (i == EditorInfo.IME_ACTION_SEARCH || (null != keyEvent && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                    if (null != keyEvent) {
-                        switch (keyEvent.getAction()) {
-                            case KeyEvent.ACTION_UP:
-                                getResult(textView);
-                                return true;
-                            default:
-                                return true;
-                        }
-                    } else {
-                        getResult(textView);
+        setOnEditorActionListener((textView, i, keyEvent) -> {
+            if (i == EditorInfo.IME_ACTION_SEARCH || (null != keyEvent && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                if (null != keyEvent) {
+                    switch (keyEvent.getAction()) {
+                        case KeyEvent.ACTION_UP:
+                            getResult(textView);
+                            return true;
+                        default:
+                            return true;
                     }
+                } else {
+                    getResult(textView);
                 }
-                return true;
             }
+            return true;
         });
     }
 
